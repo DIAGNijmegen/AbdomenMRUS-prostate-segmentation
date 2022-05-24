@@ -1,4 +1,4 @@
-# Prostate Segmentation
+# Prostate Segmentation in MRI
 
 ## Managed By
 Diagnostic Image Analysis Group,
@@ -14,7 +14,7 @@ Nijmegen, The Netherlands
 This algorithm is hosted on [Grand-Challenge.com](https://grand-challenge.org/algorithms/prostate-segmentation/).
 
 ## Summary
-This algorithm segments the whole prostate gland in biparametric MRI (bpMRI). Development of this model was geared toward robust prostate segmentation, at the expense of fine-grained zonal segmentation.
+This algorithm segments the whole prostate gland in biparametric MRI (bpMRI). Development of this model was geared toward robust prostate segmentation, at the expense of fine-grained zonal segmentation. This algorithm was used to provide prostate segmentations for the [PI-CAI challenge](https://pi-cai.grand-challenge.org/).
 
 ## Mechanism
 This algorithm is a deep learning-based model, which ensembles five independent nnU-Net models (using 5-fold cross-validation). To prioritize robust segmentation, we trained these models with Cross-Entropy + Focal loss. We trained these models with a total of 438 prostate biparametric MRI (bpMRI) scans paired with a manual prostate segmentation. These scans were sourced from two independent hospitals: 299 cases from Radboudumc (of which 248 part of [ProstateX](https://prostatex.grand-challenge.org)) and 139 cases from [Prostate158](https://prostate158.grand-challenge.org).
@@ -27,6 +27,9 @@ This algorithm is evaluated using 5-fold cross-validation using the dataset desc
 | Dice similarity coefficient  | Jaccard  index  |
 |--------------------|--------------------|
 | 0.8968 ± 0.0547    | 0.8169 ± 0.0820    |
+
+## Training
+Training steps are provided in [here](training/training-steps.md).
 
 ## Uses and Directions
 - **For research use only**. This algorithm is intended to be used only on biparametric prostate MRI examinations. This algorithm should not be used in different patient demographics. 
