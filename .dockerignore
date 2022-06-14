@@ -1,0 +1,4 @@
+.git/
+*.tar.gz
+test/
+training/
