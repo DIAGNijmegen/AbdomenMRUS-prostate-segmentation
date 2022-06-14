@@ -123,7 +123,8 @@ class ProstateSegmentationAlgorithm(SegmentationAlgorithm):
         pred: sitk.Image = sitk.ReadImage(pred_path)
 
         # transform prediction to original space
-        pred = resample_to_reference_scan(pred, reference_scan_original=self.scan_paths[0])
+        reference_scan = sitk.ReadImage(str(self.scan_paths[0]))
+        pred = resample_to_reference_scan(pred, reference_scan_original=reference_scan)
 
         # remove metadata to get rid of SimpleITK warning
         strip_metadata(pred)
