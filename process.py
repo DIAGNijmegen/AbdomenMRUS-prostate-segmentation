@@ -7,7 +7,8 @@ from evalutils import SegmentationAlgorithm
 from evalutils.validators import (UniqueImagesValidator,
                                   UniquePathIndicesValidator)
 from picai_prep.data_utils import atomic_image_write
-from picai_prep.preprocessing import Sample
+from picai_prep.preprocessing import (PreprocessingSettings, Sample,
+                                      resample_to_reference_scan)
 
 
 class MissingSequenceError(Exception):
@@ -88,6 +89,10 @@ class ProstateSegmentationAlgorithm(SegmentationAlgorithm):
                 sitk.ReadImage(str(path))
                 for path in self.scan_paths
             ],
+            settings=PreprocessingSettings(
+                physical_size=[81.0, 192.0, 192.0],
+                only_crop=True
+            )
         )
 
         # perform preprocessing
@@ -116,6 +121,9 @@ class ProstateSegmentationAlgorithm(SegmentationAlgorithm):
         # read binarized and postprocessed prediction
         pred_path = str(self.nnunet_out_dir / "scan.nii.gz")
         pred: sitk.Image = sitk.ReadImage(pred_path)
+
+        # transform prediction to original space
+        pred = resample_to_reference_scan(pred, reference_scan_original=self.scan_paths[0])
 
         # remove metadata to get rid of SimpleITK warning
         strip_metadata(pred)
