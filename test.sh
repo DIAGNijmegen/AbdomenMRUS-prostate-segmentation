@@ -20,7 +20,7 @@ docker run --rm \
 docker run --rm \
         -v $DOCKER_FILE_SHARE:/output/ \
         -v $SCRIPTPATH/test/:/input/ \
-        insighttoolkit/simpleitk-notebooks:latest python -c "import sys; import json; import numpy as np; import SimpleITK as sitk; f1 = sitk.GetArrayFromImage(sitk.ReadImage('/output/images/transverse-whole-prostate-mri/prostate_gland.mha')); f2 = sitk.GetArrayFromImage(sitk.ReadImage('/input/transverse-whole-prostate-mri/ProstateX-0000_07-07-2011.mha')); print('max. difference between prediction and reference:', np.abs(f1-f2).max()); sys.exit(int(np.abs(f1-f2).max() > 1e-3));"
+        insighttoolkit/simpleitk-notebooks:latest python -c "import sys; import numpy as np; import SimpleITK as sitk; f1 = sitk.GetArrayFromImage(sitk.ReadImage('/output/images/transverse-whole-prostate-mri/prostate_gland.mha')); f2 = sitk.GetArrayFromImage(sitk.ReadImage('/input/transverse-whole-prostate-mri/ProstateX-0000_07-07-2011.mha')); print('Pixels different between prediction and reference:', np.abs(f1!=f2).sum()); sys.exit(int(np.abs(f1!=f2).sum() > 10));"
 
 if [ $? -eq 0 ]; then
     echo "Tests successfully passed..."
