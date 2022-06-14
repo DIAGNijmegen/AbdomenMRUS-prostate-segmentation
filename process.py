@@ -91,7 +91,7 @@ class ProstateSegmentationAlgorithm(SegmentationAlgorithm):
             ],
             settings=PreprocessingSettings(
                 physical_size=[81.0, 192.0, 192.0],
-                only_crop=True
+                crop_only=True
             )
         )
 
