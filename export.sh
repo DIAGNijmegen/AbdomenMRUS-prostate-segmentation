@@ -2,4 +2,5 @@
 
 ./build.sh
 
-docker save picai_prostate_segmentation_processor | gzip -c > picai_prostate_segmentation_processor-1.0.1.tar.gz
+docker save joeranbosma/picai_prostate_segmentation_processor:latest | gzip -c > picai_prostate_segmentation_processor-v2.1.tar.gz
+
