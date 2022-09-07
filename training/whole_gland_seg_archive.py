@@ -15,11 +15,11 @@
 
 import json
 import os
-from tqdm import tqdm
 from pathlib import Path
-from typing import Optional, List
+from typing import List, Optional
 
 from picai_prep.data_utils import PathLike
+from tqdm import tqdm
 
 
 def generate_prostate158_archive_items(
@@ -34,25 +34,19 @@ def generate_prostate158_archive_items(
         ├── t2_anatomy_reader1.nii.gz
         ...
     """
-    ignore_files = [
-        ".DS_Store",
-        "LICENSE",
-        "README.md",
-        "train.csv",
-        "valid.csv",
-    ]
     archive_list = []
 
     # traverse archive
     archive_dir = os.path.join(in_dir_data, images_dir)
     for study_id in tqdm(sorted(os.listdir(archive_dir))):
         # traverse each study
-        if study_id in ignore_files:
+        study_dir = os.path.join(images_dir, study_id)
+        if not os.path.isdir(os.path.join(in_dir_data, study_dir)):
             continue
 
         # construct scan paths
         scan_paths = [
-            os.path.join(images_dir, f"{study_id}/{modality}.nii.gz")
+            os.path.join(study_dir, f"{modality}.nii.gz")
             for modality in ["t2", "adc", "dwi"]
         ]
         all_scans_found = all([
@@ -103,14 +97,6 @@ def generate_prostatex_archive_items(
 
     The annotations are assumed to be stored as [patient UID]_[study UID].nii.gz
     """
-    ignore_files = [
-        ".DS_Store",
-        "LICENSE",
-        "README.md",
-        "2022-02-25-verify_samples_log.txt",
-        "2022-02-verify_samples_log.txt",
-        "verify_samples_log.txt",
-    ]
     archive_list = []
 
     if subject_list is not None:
@@ -120,11 +106,11 @@ def generate_prostatex_archive_items(
     archive_dir = os.path.join(in_dir_data, images_dir)
     for patient_id in tqdm(sorted(os.listdir(archive_dir))):
         # traverse each patient
-        if patient_id in ignore_files:
+        patient_dir = os.path.join(archive_dir, patient_id)
+        if not os.path.isdir(patient_dir):
             continue
 
         # collect list of available studies
-        patient_dir = os.path.join(archive_dir, patient_id)
         files = os.listdir(patient_dir)
         files = [fn.replace(".mha", "") for fn in files if ".mha" in fn and "._" not in fn]
         subject_ids = ["_".join(fn.split("_")[0:2]) for fn in files]
