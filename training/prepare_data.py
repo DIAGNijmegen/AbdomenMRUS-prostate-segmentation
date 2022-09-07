@@ -69,6 +69,6 @@ else:
         lbl_preprocess_func=preprocess_annotation,
     )
     archive.convert()
-    archive.generate_json()
+    archive.create_dataset_json()
 
 print("Finished.")

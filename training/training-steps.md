@@ -9,18 +9,18 @@ This document aims to make the development steps of this prostate segmentation a
 The data preparation steps require `picai_prep` to be installed:
 
 ```
-pip install git+https://github.com/DIAGNijmegen/picai_prep
+pip install picai_prep==2.0.1
 ```
 
 
 ### Folder Structure
 We define three main folders that must be prepared apriori:
 
-- `/input/` contains the dataset (after following the [Data Preparation](#Data-Preparation) steps).
+- `/input/` contains the dataset (after following the [Data Preparation](#Data-Preparation) steps below).
   - `/input/images/` contains the imaging files.
   - `/input/labels/` contains the annotations.
 - `/workdir/` stores intermediate results, such as preprocessed images and annotations.
-  - `/workdir/results/[model name]/` stores model checkpoints/weights during training (enables the ability to pause/resume training).    
+  - `/workdir/results/[model name]/` stores model checkpoints/weights during training (enables the ability to pause/resume training).
 - `/output/` stores output, such as trained model weights and prostate segmentations.
 
 Most of the cases used to train this model are publicly available. The ProstateX cases can be retrieved [here][PROSTATEx_masks], and the Prostate158 cases can be retrieved [here](https://prostate158.grand-challenge.org/).
@@ -54,7 +54,7 @@ The nnU-Net framework [[1]](#1) provides a performant framework for medical imag
 To run nnU-Net commands, we used the Docker specified in [`picai_baseline` → `Dockers/nnunet/`](https://github.com/DIAGNijmegen/picai_baseline/tree/main/src/picai_baseline/Dockers/nnunet). This is a wrapper around nnU-Net, and facilitates training in a Docker container on a distributed system. The pre-built Docker container can be pulled from [Docker Hub][picai_nnunet_docker]:
 
 ```
-docker pull joeranbosma/picai_nnunet:1.7.0-customized-v1.1
+docker pull joeranbosma/picai_nnunet:1.7.0-customized-v1.4
 ```
 
 
@@ -69,20 +69,19 @@ Running the first fold will start with preprocessing the raw images. After prepr
 
 ```bash
 docker run --gpus='"device=0"' \
-    -v /path/to/nnUNet_raw_data:/workdir/nnUNet_raw_data \
-    -v /path/to/nnUNet_results:/workdir/results \
+    -v /path/to/workdir:/workdir \
     joeranbosma/picai_nnunet:latest nnunet plan_train \
-    Task2202_prostate_segmentation /workdir/ \
+    Task2202_prostate_segmentation /workdir \
     --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 0
 ```
 
 After preprocessing is done, the other folds can be run sequentially or in parallel:
 
 ```bash
-docker run --gpus='"device=0"' -v /path/to/nnUNet_raw_data:/workdir/nnUNet_raw_data -v /path/to/nnUNet_results:/workdir/results joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir/ --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 1
-docker run --gpus='"device=0"' -v /path/to/nnUNet_raw_data:/workdir/nnUNet_raw_data -v /path/to/nnUNet_results:/workdir/results joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir/ --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 2
-docker run --gpus='"device=0"' -v /path/to/nnUNet_raw_data:/workdir/nnUNet_raw_data -v /path/to/nnUNet_results:/workdir/results joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir/ --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 3
-docker run --gpus='"device=0"' -v /path/to/nnUNet_raw_data:/workdir/nnUNet_raw_data -v /path/to/nnUNet_results:/workdir/results joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir/ --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 4
+docker run --gpus='"device=0"' -v /path/to/workdir:/workdir joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 1
+docker run --gpus='"device=0"' -v /path/to/workdir:/workdir joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 2
+docker run --gpus='"device=0"' -v /path/to/workdir:/workdir joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 3
+docker run --gpus='"device=0"' -v /path/to/workdir:/workdir joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 4
 ```
 
 Notes: ran in our environment with 28 GB RAM, 8 CPUs, 1 GPU with 8 GB VRAM. Takes about 3 days per fold on an RTX 2080 Ti.
@@ -94,10 +93,9 @@ First, let nnU-Net determine the postprocessing steps:
 
 ```bash
 docker run --gpus='"device=0"' \
-    -v /path/to/nnUNet_raw_data:/workdir/nnUNet_raw_data \
-    -v /path/to/nnUNet_results:/output/nnUNet_results \
+    -v /path/to/workdir:/workdir \
     joeranbosma/picai_nnunet:latest nnunet find_best_configuration \
-    Task2202_prostate_segmentation /workdir/ \
+    Task2202_prostate_segmentation /workdir \
     --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints \
     --networks 3d_fullres
 ```
@@ -106,8 +104,7 @@ Then, you can segment bpMRI cases that are converted to the [`nnU-Net Raw Data A
 
 ```bash
 docker run --gpus='"device=0"' \
-    -v /path/to/nnUNet_raw_data:/workdir/nnUNet_raw_data \
-    -v /path/to/nnUNet_results:/workdir/results \
+    -v /path/to/workdir:/workdir \
     -v /path/to/output:/output \
     joeranbosma/picai_nnunet nnunet predict Task2202_prostate_segmentation \
     --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints \
