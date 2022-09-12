@@ -68,7 +68,7 @@ For general documentation on how to train nnU-Net models, please check the [offi
 Running the first fold will start with preprocessing the raw images. After preprocessing is done, it will automatically start training.
 
 ```bash
-docker run --gpus='"device=0"' \
+docker run --cpus=8 --memory=32gb --shm-size=32gb --gpus='"device=0"' -it --rm \
     -v /path/to/workdir:/workdir \
     joeranbosma/picai_nnunet:latest nnunet plan_train \
     Task2202_prostate_segmentation /workdir \
@@ -78,10 +78,10 @@ docker run --gpus='"device=0"' \
 After preprocessing is done, the other folds can be run sequentially or in parallel:
 
 ```bash
-docker run --gpus='"device=0"' -v /path/to/workdir:/workdir joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 1
-docker run --gpus='"device=0"' -v /path/to/workdir:/workdir joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 2
-docker run --gpus='"device=0"' -v /path/to/workdir:/workdir joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 3
-docker run --gpus='"device=0"' -v /path/to/workdir:/workdir joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 4
+docker run --cpus=8 --memory=32gb --shm-size=32gb --gpus='"device=0"' -it --rm -v /path/to/workdir:/workdir joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 1
+docker run --cpus=8 --memory=32gb --shm-size=32gb --gpus='"device=0"' -it --rm -v /path/to/workdir:/workdir joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 2
+docker run --cpus=8 --memory=32gb --shm-size=32gb --gpus='"device=0"' -it --rm -v /path/to/workdir:/workdir joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 3
+docker run --cpus=8 --memory=32gb --shm-size=32gb --gpus='"device=0"' -it --rm -v /path/to/workdir:/workdir joeranbosma/picai_nnunet:latest nnunet plan_train Task2202_prostate_segmentation /workdir --trainer nnUNetTrainerV2_Loss_FL_and_CE_checkpoints --fold 4
 ```
 
 Notes: ran in our environment with 28 GB RAM, 8 CPUs, 1 GPU with 8 GB VRAM. Takes about 3 days per fold on an RTX 2080 Ti.
