@@ -19,7 +19,7 @@ Then, build the Docker container:
 ./build.sh
 ```
 
-This builds the Docker container named `picai_prostate_segmentation_processor`, which can be used for inference.
+This builds the Docker container named `joeranbosma/picai_prostate_segmentation_processor`, which can be used for inference.
 To perform inference, prepare the case in the same format as the [test case](../test/):
 
 ```bash
@@ -37,6 +37,18 @@ Then, perform inference by executing the Docker container and pointing to the in
 
 ```bash
 docker run --cpus=8 --memory=12gb --shm-size=12gb --gpus='"device=0"' -it --rm \
-    -v /path/to/input:/input \
-    picai_prostate_segmentation_processor python process.py
+    -v /path/to/input/:/input \
+    -v /path/to/output/:/output \
+    joeranbosma/picai_prostate_segmentation_processor
 ```
+
+In case you observe one of the following two errors:
+
+```bash
+PermissionError: [Errno 13] Permission denied: '/output/images'
+FileNotFoundError: [Errno 2] No such file or directory: '/output/images/transverse-whole-prostate-mri'
+```
+
+If this happens, create the subfolders `/path/to/output/images/transverse-whole-prostate-mri` already.
+
+After the Docker container finishes, the prostate segmentation will be stored to `/path/to/output/images/transverse-whole-prostate-mri/prostate_gland.mha`.
