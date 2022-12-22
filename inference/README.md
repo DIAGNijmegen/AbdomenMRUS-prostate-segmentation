@@ -52,3 +52,7 @@ FileNotFoundError: [Errno 2] No such file or directory: '/output/images/transver
 If this happens, create the subfolders `/path/to/output/images/transverse-whole-prostate-mri` already.
 
 After the Docker container finishes, the prostate segmentation will be stored to `/path/to/output/images/transverse-whole-prostate-mri/prostate_gland.mha`.
+
+
+## Method B: use prebuilt Docker container and perform batch inference
+Please follow the steps outlined in [Training > Inference](../training/training-steps.md#nnu-net---inference).
