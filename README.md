@@ -10,8 +10,8 @@ Nijmegen, The Netherlands
 - Anindo Saha: Anindya.Shaha@radboudumc.nl
 - Henkjan Huisman: Henkjan.Huisman@radboudumc.nl
 
-## Algorithm
-This algorithm is hosted on [Grand-Challenge.com](https://grand-challenge.org/algorithms/prostate-segmentation/).
+## Inference
+This algorithm is hosted on [Grand-Challenge.com](https://grand-challenge.org/algorithms/prostate-segmentation/). Alternatively, [inference can be performed locally](inference/README.md).
 
 ## Summary
 This algorithm segments the whole prostate gland in biparametric MRI (bpMRI). Development of this model was geared toward robust prostate segmentation, at the expense of fine-grained zonal segmentation. This algorithm was used to provide prostate segmentations for the [PI-CAI challenge](https://pi-cai.grand-challenge.org/).
