@@ -1,1 +1,1 @@
-Content moved to [README.md](https://github.com/DIAGNijmegen/AbdomenMRUS-prostate-segmentation/blob/main/training).
+Content moved to [README.md](README.md).
