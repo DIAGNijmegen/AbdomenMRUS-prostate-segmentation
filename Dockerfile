@@ -8,13 +8,7 @@ RUN mkdir -p /opt/algorithm /input /output \
 RUN apt-get -y update
 RUN apt-get -y install git
 
-USER algorithm
-
 WORKDIR /opt/algorithm
-
-ENV PATH="/home/algorithm/.local/bin:${PATH}"
-
-RUN python -m pip install --user -U pip
 
 # Copy nnU-Net results folder
 # The required files for nnUNet inference are:
@@ -34,7 +28,7 @@ COPY --chown=algorithm:algorithm results/ /opt/algorithm/results/
 # Install algorithm requirements
 ENV SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
 COPY --chown=algorithm:algorithm requirements.txt /opt/algorithm/
-RUN python -m pip install --user -r requirements.txt
+RUN python -m pip install -r requirements.txt
 
 # Extend the nnUNet installation with custom trainers
 COPY --chown=algorithm:algorithm nnUNetTrainerV2_focalLoss.py /tmp/nnUNetTrainerV2_focalLoss.py
