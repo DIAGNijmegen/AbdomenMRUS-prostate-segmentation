@@ -1,0 +1,5 @@
+evalutils==0.3.0
+matplotlib
+nnunet==1.7.0
+SimpleITK>=2.1.1.2
+picai_prep==2.1.6

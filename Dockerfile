@@ -32,6 +32,7 @@ RUN mkdir -p /opt/algorithm/results/ \
 COPY --chown=algorithm:algorithm results/ /opt/algorithm/results/
 
 # Install algorithm requirements
+ENV SKLEARN_ALLOW_DEPRECATED_SKLEARN_PACKAGE_INSTALL=True
 COPY --chown=algorithm:algorithm requirements.txt /opt/algorithm/
 RUN python -m pip install --user -r requirements.txt
 
