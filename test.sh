@@ -14,7 +14,7 @@ docker volume create $DOCKER_FILE_SHARE
 docker run --rm \
         -v $SCRIPTPATH/test/:/input/ \
         -v $DOCKER_FILE_SHARE:/output/ \
-        picai_prostate_segmentation_processor
+        joeranbosma/picai_prostate_segmentation_processor:latest
 
 # check prostate segmentation (at /output/images/transverse-whole-prostate-mri/prostate_gland.mha)
 docker run --rm \
