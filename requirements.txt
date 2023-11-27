@@ -2,4 +2,4 @@ evalutils==0.3.0
 matplotlib
 nnunet==1.7.0
 SimpleITK>=2.1.1.2
-https://github.com/DIAGNijmegen/picai_prep/archive/refs/tags/v1.3.2.zip
+picai_prep==2.1.6
