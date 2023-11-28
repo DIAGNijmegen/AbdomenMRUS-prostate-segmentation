@@ -11,7 +11,7 @@ docker volume create $DOCKER_FILE_SHARE
 # you can see your output (to debug what's going on) by specifying a path instead:
 # DOCKER_FILE_SHARE="/Users/joeranbosma/tmp-docker-volume"
 
-docker run --rm \
+docker run --rm -it --gpus='"device=0"' \
         -v $SCRIPTPATH/test/:/input/ \
         -v $DOCKER_FILE_SHARE:/output/ \
         joeranbosma/picai_prostate_segmentation_processor:latest
